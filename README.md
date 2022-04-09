@@ -41,15 +41,15 @@ Raspberry Piで室内の温湿度値の 計測 / 判定 / 管理 を行う。
 ```bash
 git clone https://github.com/chibiharu/TemperatureHumidity-AcquisitionFunctionToRaspberryPi.git
 ```
-2. スタートアップスクリプトを実行します。
-```bash
-cd TemperatureHumidity-AcquisitionFunctionToRaspberryPi/03_materials
-sudo ./setup.sh
-```
-3. パラメータファイルを更新します。※デフォルトでも動作します
+2. パラメータファイルを更新します。※デフォルトでも動作します
 ```bash
 cd TemperatureHumidity-AcquisitionFunctionToRaspberryPi/01_param
 vi common.conf
+```
+3. スタートアップスクリプトを実行します。
+```bash
+cd TemperatureHumidity-AcquisitionFunctionToRaspberryPi/03_materials
+sudo ./setup.sh
 ```
 
 ## 参考
