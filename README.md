@@ -36,6 +36,21 @@ Raspberry Piで室内の温湿度値の 計測 / 判定 / 管理 を行う。
 ```
 
 ## 使用方法
+- 初めて利用される方
+1. 任意のディレクトリへライブラリをダウンロードします。
+```bash
+git clone https://github.com/chibiharu/TemperatureHumidity-AcquisitionFunctionToRaspberryPi.git
+```
+2. スタートアップスクリプトを実行します。
+```bash
+cd TemperatureHumidity-AcquisitionFunctionToRaspberryPi/03_materials
+sudo ./setup.sh
+```
+3. パラメータファイルを更新します。※デフォルトでも動作します
+```bash
+cd TemperatureHumidity-AcquisitionFunctionToRaspberryPi/01_param
+vi common.conf
+```
 
 ## 参考
-- []()
+- [【DHT22】Raspberry PiとAWSを連携して室内の温度・湿度を計測する](https://chibinfra-techblog.com/raspberrypi-dht22-th/)
