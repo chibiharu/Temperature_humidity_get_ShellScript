@@ -78,6 +78,7 @@ function FuncCloneAdafruit() {
 #####################################################################
 ## メイン処理
 #####################################################################
+echo "### 処理中です... ###"
 FuncRoot >> $SetUpLog
 FuncPre >> $SetUpLog
 FuncInstallPython >> $SetUpLog
