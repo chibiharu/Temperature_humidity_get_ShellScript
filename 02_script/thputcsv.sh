@@ -1,13 +1,17 @@
 #######################################################################################
 #
 # <スクリプト名>
-# 温湿度情報判定スクリプト
+# 温湿度情報スクリプト
 #
 # <概要>
-# 取得した温湿度情報をログ出力を行う
+# 取得した温湿度情報を基に以下の処理を実行する
+# - 温湿度情報のSLAを判定
+#     - 判定結果をログとして出力
+# - 温湿度情報をデータ(CSV)として出力
 #
 # <更新履歴>
 # 20210906 - 新規作成
+# 20220408 - 全体的な処理ロジックを更新
 #
 #######################################################################################
 #!/bin/bash
@@ -31,11 +35,8 @@ current_path=$(cd $(dirname $0); pwd)
 # パラメータ設定
 ######################################################################
 
-# ログ・ファイル
+# ログファイル
 log_FILE="/var/log/temp_humi.log"
-
-# 一時ファイル
-sla_tmp_FILE="${current_path}/temp_humi_sla.log"
 
 # CSVファイル
 CSV_FILE="/var/log/temp_humi_${today}.csv"
@@ -46,27 +47,17 @@ CSV_FILE="/var/log/temp_humi_${today}.csv"
 #####################################################################
 
 # ログ・ファイルがなかったら作成する
-if [ ! -e log_FILE ]; then
-  sudo touch ${log_FILE}
-fi
-
-# CSVファイルがなかったら作成する
-if [ ! -e CSV_FILE ]; then
-  sudo touch ${CSV_FILE}
-
-fi
+# if [ ! -e log_FILE ]; then
+#   sudo touch ${log_FILE}
+# fi
 
 
 #####################################################################
 ## 温湿度を取得
 #####################################################################
 
-# 室内の温湿度を取得
-python_kekka=`python <スクリプト存在パス>`
-# 処理が成功しているか確認し、失敗していたら再トライする
-if echo $python_kekka | grep Failed ; then
-  python_kekka=`python <スクリプト存在パス>`
-fi
+# 温湿度値取得スクリプトを実行
+str_raw=`python current_path/basicdht22.py`
 
 
 ######################################################################
@@ -79,48 +70,18 @@ fi
 #
 #######################################################################
 
-# 取得成功時の処理
-function success_str_sed() {
-  # 複数のスペースを1つに変換
-  python_kekka=`echo $python_kekka | sed -e 's/(space)(space)*/(space)/g'`
-  #python_kekka=`echo $python_kekka | sed -e "s/   / /g"`
-  #python_kekka=`echo $python_kekka | sed -e "s/  / /g"`
-  #python_kekka=`echo $python_kekka | sed -e "s/  / /g"`
-echo $python_kekka
+# 関数：取得した温湿度情報から必要事項を各変数に格納
+function FuncSedTH() {
  # 配列に格納
-  ary=(`echo $python_kekka`)
+  ary=(`echo $str_raw`)
   # 配列から要素を抜き出す
   str_time=`echo ${ary[0]}`
   str_temp=`echo ${ary[1]}`
   str_humi=`echo ${ary[2]}`
-
-  ### 取得した情報を整形 ###
-  # 湿度値を整形
-  str_temp=`echo $str_temp | sed -e "s/Temp=//g"`
-  str_temp_long=`echo $str_temp | sed -e "s/*C//g"`
-  str_temp_long=`echo $str_temp_long | awk '{printf("%d\n",$1)}'`
-  # 温度値を整形
-  str_humi=`echo $str_humi | sed -e "s/Humidity=//g"`
-  str_humi_long=`echo $str_humi | sed -e "s/%//g"`
-  str_humi_long=`echo $str_humi_long | awk '{printf("%d\n",$1)}'`
-  echo $str_humi_long
-}
-
-# 取得失敗時の処理
-function failed_str_sed(){
-  failed_str=`echo $python_kekka | sed -e 's/(space)(space)*/(space)/g'`
-  #failed_str=`echo $python_kekka | sed -e "s/   / /g"`
-  #failed_str=`echo $failed_str | sed -e "s/  / /g"`
-  failed_str=`echo $failed_str | sed -e "s/Failed//g"`
-  failed_str=`echo $failed_str | sed -e "s/to//g"`
-  failed_str=`echo $failed_str | sed -e "s/get//g"`
-  failed_str=`echo $failed_str | sed -e "s/reading//g"`
-  failed_str=`echo $failed_str | sed -e "s/Try//g"`
-  failed_str=`echo $failed_str | sed -e "s/again!//g"`
 }
 
 
-###################################################################
+####################################################################
 ## 関数：SLA判定
 ####################################################################
 # -- 設定パラメータ情報 --
@@ -132,7 +93,9 @@ function failed_str_sed(){
 #####################################################################
 
 # SLAを判定
-function SLA() {
+!!!!!!!!!!!!!!!!!! caseにする
+!!!!!!!!!!!!!!!!!! SLA値をパラメータ設定に移動
+function FuncSLA() {
   # 判定用の数値
   i=1
   # 温度を判定
@@ -155,18 +118,12 @@ function SLA() {
 #####################################################################
 ## ログ出力
 #####################################################################
-
-### 失敗時のログ出力 ###
-function failed_logger() {
-  echo -n $time | sudo tee -a $log_FILE
-  echo -n "   " | sudo tee -a $log_FILE
-  echo -n "Error_Code=[103]" | sudo tee -a $log_FILE
-  echo -n "   " | sudo tee -a $log_FILE
-  echo -n "Error=[GetFailed]" | sudo tee -a $log_FILE
-  echo -n "   " | sudo tee -a $log_FILE
-  echo -n "Massage=[Failed to get reading. Try again!]" | sudo tee -a $log_FILE
-  echo "   " | sudo tee -a $log_FILE
-}
+# -- 処理概要 --
+# 1. 
+# 2. 
+# 3. 
+#
+#####################################################################
 
 ### 温度異常検知時の処理 ###
 function temp_logger() {
@@ -216,7 +173,6 @@ function success_logger() {
 }
 
 
-
 #####################################################################
 ## 温湿度情報一覧の作成
 #####################################################################
@@ -231,19 +187,15 @@ function writeing_csv_success() {
 }
 
 
-
 #####################################################################
 ## メイン処理
 #####################################################################
-
-### pythonスクリプトの出力結果によって処理を分岐する ###
-if echo $python_kekka | grep Failed ; then
-  # 取得失敗時の処理
-  failed_str_sed
-  failed_logger
-else
-  # 取得成功時の処理
-  success_str_sed
-  SLA
-  writeing_csv_success
-fi
+# -- 処理概要 --
+# 1. 
+# 2. 
+# 3. 
+#
+#####################################################################
+FuncSedTH
+FuncSla
+FuncWriteingCsv
