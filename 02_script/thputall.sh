@@ -34,24 +34,8 @@ current_path=$(cd $(dirname $0); pwd)
 ####################################################################
 # パラメータ設定
 ####################################################################
-
-## リソースパス
-# ログ
-LogDir="/var/log/ThLog"
-LogFile="temp_humi.log"
-LogPath=$LogDir"/"$LogFile
-# CSV
-CsvDir="/var/log/ThCsv"
-CsvFile="temp_humi_${today}.csv"
-CsvPath=$CsvDir"/"$CsvFile
-
-## SLA値
-# 温度SLA
-TMax=30
-TMin=15
-# 湿度SLA
-HMax=70
-HMin=30
+#設定ファイルから変数を取得
+source ../01_param/common.conf
 
 
 ####################################################################
@@ -66,7 +50,6 @@ if [ ! -d $CsvDir ];then mkdir $CsvDir ;fi
 ###################################################################
 ## 温湿度を取得
 ###################################################################
-
 # 温湿度値取得スクリプトを実行
 str_raw=`python $current_path/basicdht22.py`
 
@@ -97,11 +80,11 @@ function FuncSedTH() {
 ####################################################################
 function FuncSla() {
   # 温度を判定
-  if [[ $str_temp_bc -gt $TMax ]] || [[ $str_temp_bc -lt $TMin ]];then i=2 ECode=101 FuncOutLog ;fi
+  if [[ $str_temp_bc -gt $TMax ]] || [[ $str_temp_bc -lt $TMin ]];then ECode=101 FuncOutLog ;fi
   # 湿度を判定
-  if [[ $str_humi_bc -gt $HMax ]] || [[ $str_humi_bc -lt $HMin ]];then i=2 ECode=102 FuncOutLog ;fi
+  if [[ $str_humi_bc -gt $HMax ]] || [[ $str_humi_bc -lt $HMin ]];then ECode=102 FuncOutLog ;fi
   # SLAに合格した時の処理
-  if [[ $i -ne 2 ]];then ECode=100 FuncOutLog ;fi
+  if [[ $i -eq 1 ]];then ECode=100 FuncOutLog ;fi
 }
 
 
@@ -115,12 +98,14 @@ function FuncOutLog() {
       Error="Error=[TemperatureFailed]"
       Massage="Massage=[An abnormal value was detected in the temperature value]"
       Value="Value=["$str_humi"*C]"
+      i=2
       ;;
     "102")
       ECode="ErrorCode[102]"
       Error="Error=[HumidityFailed]"
       Massage="Massage=[An abnormal value was detected in the Humidity value]"
       Value="Value=["$str_humi"%]"
+      i=2
       ;;
     "100")
       ECode="ErrorCode[100]"
@@ -137,7 +122,7 @@ function FuncOutLog() {
 ## 関数：CSVファイルへ取得情報を追記
 #####################################################################
 function FuncWriteingCsv() {
-  echo -e $str_time"\t"$str_temp"\t"$str_humi"%" | tee -a $CsvPath
+  echo -e $str_time"\t"$str_temp"*C""\t"$str_humi"%" | tee -a $CsvPath
 }
 
 
