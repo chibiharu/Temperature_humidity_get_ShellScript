@@ -46,6 +46,7 @@ function FuncPre() {
 ### Python開発ツール ###
 function FuncInstallPython() {
   echo "### Start function FuncInstallPython ###"
+  apt-get install build-essential python-dev
   wget https://www.python.org/ftp/python/3.9.4/Python-3.9.4.tgz
   tar zxvf Python-3.9.4.tgz
   cd Python-3.9.4
