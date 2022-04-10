@@ -31,6 +31,8 @@ function FuncRoot() {
   if [[ `whoami` != "root" ]]; then
     echo "rootユーザで実行してください。"
     exit 1
+  else
+    echo "rootユーザで実行されていることを確認しました。"
   fi
   echo "### End function FuncRoot ###"
 }
@@ -47,13 +49,10 @@ function FuncPre() {
 function FuncInstallPython() {
   echo "### Start function FuncInstallPython ###"
   apt-get install build-essential python-dev
-  wget https://www.python.org/ftp/python/3.9.4/Python-3.9.4.tgz
-  tar zxvf Python-3.9.4.tgz
-  cd Python-3.9.4
-  ./configure
-  make
-  make install
-  python3.9 -v
+  python --version
+  sudo unlink /usr/bin/python
+  sudo ln -s python3 /usr/bin/python
+  python --version
   echo "### End function FuncInstallPython ###"
 }
 
@@ -70,8 +69,7 @@ function FuncInstallGit() {
 function FuncCloneAdafruit() {
   echo "### Start function FuncCloneAdafruit ###"
   git clone https://github.com/adafruit/Adafruit_Python_DHT.git
-  cd Adafruit_Python_DHT/
-  python setup.py install
+  python ./Adafruit_Python_DHT/setup.py install
   echo "### End function FuncCloneAdafruit ###"
 }
 
