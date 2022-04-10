@@ -52,11 +52,7 @@ function FuncInstallPython() {
   python --version
   sudo unlink /usr/bin/python
   sudo ln -s python3 /usr/bin/python
-<<<<<<< HEAD
-  python --version 
-=======
   python --version
->>>>>>> 616e3391bc5ad207e8e1a9026422658bd335c61f
   echo "### End function FuncInstallPython ###"
 }
 
