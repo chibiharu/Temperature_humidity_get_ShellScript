@@ -31,6 +31,8 @@ function FuncRoot() {
   if [[ `whoami` != "root" ]]; then
     echo "rootユーザで実行してください。"
     exit 1
+  else
+    echo "rootユーザで実行されていることを確認しました。"
   fi
   echo "### End function FuncRoot ###"
 }
@@ -46,13 +48,11 @@ function FuncPre() {
 ### Python開発ツール ###
 function FuncInstallPython() {
   echo "### Start function FuncInstallPython ###"
-  wget https://www.python.org/ftp/python/3.9.4/Python-3.9.4.tgz
-  tar zxvf Python-3.9.4.tgz
-  cd Python-3.9.4
-  ./configure
-  make
-  make install
-  python3.9 -v
+  apt-get install build-essential python-dev
+  python --version
+  sudo unlink /usr/bin/python
+  sudo ln -s python3 /usr/bin/python
+  python --version 
   echo "### End function FuncInstallPython ###"
 }
 
