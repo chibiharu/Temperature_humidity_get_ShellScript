@@ -52,7 +52,11 @@ function FuncInstallPython() {
   python --version
   sudo unlink /usr/bin/python
   sudo ln -s python3 /usr/bin/python
+<<<<<<< HEAD
   python --version 
+=======
+  python --version
+>>>>>>> 616e3391bc5ad207e8e1a9026422658bd335c61f
   echo "### End function FuncInstallPython ###"
 }
 
@@ -69,8 +73,7 @@ function FuncInstallGit() {
 function FuncCloneAdafruit() {
   echo "### Start function FuncCloneAdafruit ###"
   git clone https://github.com/adafruit/Adafruit_Python_DHT.git
-  cd Adafruit_Python_DHT/
-  python setup.py install
+  python ./Adafruit_Python_DHT/setup.py install
   echo "### End function FuncCloneAdafruit ###"
 }
 
@@ -78,6 +81,7 @@ function FuncCloneAdafruit() {
 #####################################################################
 ## メイン処理
 #####################################################################
+echo "### 処理中です... ###"
 FuncRoot >> $SetUpLog
 FuncPre >> $SetUpLog
 FuncInstallPython >> $SetUpLog
