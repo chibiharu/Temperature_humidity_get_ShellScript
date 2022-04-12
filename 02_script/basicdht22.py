@@ -37,3 +37,6 @@ if humidity is None and temperature is None:
             sys.stdout.write(strtime)
             print('{0:0.1f} {1:0.1f}'.format(temperature, humidity))
             break
+else:
+    sys.stdout.write(strtime)
+    print('{0:0.1f} {1:0.1f}'.format(temperature, humidity))
