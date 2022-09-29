@@ -37,7 +37,7 @@ Raspberry Piで室内の温湿度値の 計測 / 判定 / 管理 を行う。
 
 ## 使用方法
 - 初めて利用される方
-1. 任意のディレクトリへライブラリをダウンロードします。
+1. 任意のディレクトリへリポジトリをダウンロードします。
 ```bash
 git clone https://github.com/chibiharu/TemperatureHumidity-AcquisitionFunctionToRaspberryPi.git
 ```
